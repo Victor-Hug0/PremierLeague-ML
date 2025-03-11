@@ -4,7 +4,7 @@ import requests
 from io import StringIO
 
 base_url = "https://www.football-data.co.uk/mmz4281/{season}/E0.csv"
-seasons = [f"{y-2000:02}{(y+1)-2000:02}" for y in range(2000, 2025)]
+seasons = [f"{y-2000:02}{(y+1)-2000:02}" for y in range(2005, 2018)]
 
 os.makedirs("premier_league_data", exist_ok=True)
 
