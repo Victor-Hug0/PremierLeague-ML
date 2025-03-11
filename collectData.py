@@ -19,7 +19,9 @@ for season in seasons:
         response.raise_for_status()
         
         dataFrame = pd.read_csv(StringIO(response.text), on_bad_lines="skip")
-        dataFrame["season"] = season
+        formatted_season = f"20{season[:2]}-20{season[2:]}"
+        dataFrame["season"] = formatted_season
+        
         dataFrames.append(dataFrame)
         
         path = f"premier_league_data/PremierLeague_{season}.csv"
