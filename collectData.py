@@ -30,8 +30,3 @@ for season in seasons:
         
     except requests.exceptions.RequestException as e:
         print(f"Erro ao baixar {season_url}: {e}")
-        
-if dataFrames:
-    full_data = pd.concat(dataFrames, ignore_index=True)
-    full_data.to_csv("premier_league_data/PremierLeague_All_Seasons.csv", index=False)
-    print("Todos os dados foram salvos no arquivo: premier_league_data/PremierLeague_All_Seasons.csv")
