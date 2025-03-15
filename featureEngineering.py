@@ -57,7 +57,7 @@ for df in dfs:
                 goalsDiffPerGame.append(r["MATGD"])
                 
         goalsDiffCumulative = [0]
-        goalsDiffAfterFirstMatch = [sum(goalsDiffPerGame[:i]) for i in range(1, 38)]
+        goalsDiffAfterFirstMatch = [sum(goalsDiffPerGame[:i]) for i in range(1, len(gameIndex)+1)]
         goalsDiffCumulative += goalsDiffAfterFirstMatch
                 
         for m in range(len(gameIndex)):
