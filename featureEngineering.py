@@ -89,10 +89,10 @@ for df in dfs:
         goalsDiffAfterFirstMatch = [sum(goalsDiffPerGame[:i]) for i in range(1, len(gameIndex))]
         goalsDiffCumulative += goalsDiffAfterFirstMatch
         
-        for i in range(k, len(gameIndex)):
-            goalsKPP.append(round(sum(goals[i:i+k]) / k, 2))
-            cornersKPP.append(round(sum(corners[i:i+k]) / k, 2))
-            shotsTargetKPP.append(round(sum(shotsTarget[i:i+k]) / k, 2))
+        for i in range(k, len(gameIndex)+1):
+            goalsKPP.append(round(sum(goals[i-k:i]) / k, 2))
+            cornersKPP.append(round(sum(corners[i-k:i]) / k, 2))
+            shotsTargetKPP.append(round(sum(shotsTarget[i-k:i]) / k, 2))
 
                 
         for m in range(len(gameIndex)):
