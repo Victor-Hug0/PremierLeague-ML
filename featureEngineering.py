@@ -39,7 +39,13 @@ for df in dfs:
     df["HomeCornersKPP"] = np.nan  
     df["AwayCornersKPP"] = np.nan  
     df["HomeShotTargetKPP"] = np.nan  
-    df["AwayShotTargetKPP"] = np.nan  
+    df["AwayShotTargetKPP"] = np.nan 
+    
+    #Streak
+    df["HomeStreak"] = np.nan
+    df["AwayStreak"] = np.nan
+    df["HomeWeightedStreak"] = np.nan
+    df["AwayWeightedStreak"] = np.nan
     
     teamsSeason = sorted(df["HomeTeam"].unique(), key=str.lower)
     
@@ -70,6 +76,10 @@ for df in dfs:
         cornersKPP = [np.nan] * k
         shotsTargetKPP = [np.nan] * k
         
+        #Streak
+        matchPointsList = []
+        streaks = [np.nan] * k
+        weightedStreaks = [np.nan] * k
         
         for i, r in teamGames.iterrows():
             if team == r["HomeTeam"]:
@@ -78,6 +88,14 @@ for df in dfs:
                 goals.append(r["FTHG"])
                 corners.append(r["HC"])
                 shotsTarget.append(r["HST"])
+                
+                if r["FTR"] == "H":
+                    matchPointsList.append(3)
+                elif r["FTR"] == "A":
+                    matchPointsList.append(0)
+                elif r["FTR"] == "D":
+                    matchPointsList.append(1)
+                    
             elif team == r["AwayTeam"]:
                 awayGameIndex.append(i)
                 goalsDiffPerGame.append(r["MATGD"])
@@ -85,15 +103,31 @@ for df in dfs:
                 corners.append(r["AC"])
                 shotsTarget.append(r["AST"])
                 
+                if r["FTR"] == "A":
+                    matchPointsList.append(3)
+                elif r["FTR"] == "H":
+                    matchPointsList.append(0)
+                elif r["FTR"] == "D":
+                    matchPointsList.append(1)
+                
         goalsDiffCumulative = [0]
         goalsDiffAfterFirstMatch = [sum(goalsDiffPerGame[:i]) for i in range(1, len(gameIndex))]
         goalsDiffCumulative += goalsDiffAfterFirstMatch
+    
+        weights = list(range(1, k+1))
         
         for i in range(k, len(gameIndex)+1):
             goalsKPP.append(round(sum(goals[i-k:i]) / k, 2))
             cornersKPP.append(round(sum(corners[i-k:i]) / k, 2))
             shotsTargetKPP.append(round(sum(shotsTarget[i-k:i]) / k, 2))
-
+            
+            nfStreak = 3*k
+            nfWeightedStreak = 3 * (k * (k+1) / 2)
+            
+            streaks.append(round(sum(matchPointsList[i-k:i]) / (nfStreak), 2))
+            
+            weightedPoints = np.array(matchPointsList[i-k:i]) * np.array(weights)
+            weightedStreaks.append(round(sum(weightedPoints) / (nfWeightedStreak), 2))
                 
         for m in range(len(gameIndex)):
             if gameIndex[m] in homeGameIndex:
@@ -105,6 +139,8 @@ for df in dfs:
                 df.loc[gameIndex[m], "HomeGoalsKPP"] = goalsKPP[m]
                 df.loc[gameIndex[m], "HomeCornersKPP"] = cornersKPP[m]
                 df.loc[gameIndex[m], "HomeShotTargetKPP"] = shotsTargetKPP[m]
+                df.loc[gameIndex[m], "HomeStreak"] = streaks[m]
+                df.loc[gameIndex[m], "HomeWeightedStreak"] = weightedStreaks[m]
             elif gameIndex[m] in awayGameIndex:
                 df.loc[gameIndex[m], "OverAway"] = overall
                 df.loc[gameIndex[m], "AttOverAway"] = attack
@@ -114,6 +150,8 @@ for df in dfs:
                 df.loc[gameIndex[m], "AwayGoalsKPP"] = goalsKPP[m]
                 df.loc[gameIndex[m], "AwayCornersKPP"] = cornersKPP[m]
                 df.loc[gameIndex[m], "AwayShotTargetKPP"] = shotsTargetKPP[m]
+                df.loc[gameIndex[m], "AwayStreak"] = streaks[m]
+                df.loc[gameIndex[m], "AwayWeightedStreak"] = weightedStreaks[m]
     
     
     #Fifa Rating
@@ -121,12 +159,18 @@ for df in dfs:
     df["DiffAttack"] = df.apply(lambda r: r["AttOverHome"] - r["AttOverAway"], axis=1)
     df["DiffMidfield"] = df.apply(lambda r: r["MidOverHome"] - r["MidOverAway"], axis=1)
     df["DiffDefense"] = df.apply(lambda r: r["DefOverHome"] - r["DefOverAway"], axis=1)
+    
     #Goals difference
     df["GoalsDiff"] = df.apply(lambda r: r["GoalsDiffHome"] - r["GoalsDiffAway"], axis=1)
+    
     #KPP (k-Past Performances)
     df["GoalsKPP"] = df.apply(lambda r: r["HomeGoalsKPP"] - r["AwayGoalsKPP"], axis=1)
     df["CornersKPP"] = df.apply(lambda r: r["HomeCornersKPP"] - r["AwayCornersKPP"], axis=1)
     df["ShotsTargetKPP"] = df.apply(lambda r: r["HomeShotTargetKPP"] - r["AwayShotTargetKPP"], axis=1)
+    
+    #Streak
+    df["Streak"] = df.apply(lambda r: r["HomeStreak"] - r["AwayStreak"], axis=1)
+    df["WeightedStreak"] = df.apply(lambda r: r["HomeWeightedStreak"] - r["AwayWeightedStreak"], axis=1)
     
     processed_dfs.append(df)
 
