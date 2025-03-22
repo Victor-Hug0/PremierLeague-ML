@@ -13,9 +13,10 @@ def loadDataFrameList():
     df1314 = pd.read_csv("premier_league_data/PremierLeague_1314.csv")
     df1415 = pd.read_csv("premier_league_data/PremierLeague_1415.csv")
     df1516 = pd.read_csv("premier_league_data/PremierLeague_1516.csv")
-    df1617 = pd.read_csv("premier_league_data/PremierLeague_1617.csv")
-    df1718 = pd.read_csv("premier_league_data/PremierLeague_1718.csv")
     
-    dataFramesList = [df0506, df0607, df0708, df0809, df0910, df1011, df1112, df1213, df1314, df1415, df1516, df1617, df1718]
+    dataFramesList = [df0506, df0607, df0708, df0809, df0910, df1011, df1112, df1213, df1314, df1415, df1516]
+    
+    for i in range(len(dataFramesList)):
+        dataFramesList[i] = dataFramesList[i].dropna(subset=["HomeTeam"])
     
     return dataFramesList
