@@ -5,7 +5,7 @@ from teamMapping import standardize_team_names
 
 dfs = loadDataFrameList()
 processed_dfs = []
-k = 6
+k = 5
 
 for df in dfs:
     teamsRatingFifa = pd.read_csv("TeamsOverInfo/TeamsOverInfo.csv")
