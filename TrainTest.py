@@ -8,9 +8,9 @@ def trainTestSplit():
     bettingStatsEx = ["BSH", "BSD", "BSA", "PSA", "PSH", "PSD", "PSCA", "PSCD", "PSCH"]
     genDropInfo = ["Div", "Date", "HomeTeam", "AwayTeam", "Referee"]
     nanFeatures = ['GoalsKPP', 'HomeGoalsKPP', 'AwayGoalsKPP', 'CornersKPP', 'HomeCornersKPP', 'AwayCornersKPP', 'ShotsTargetKPP', 'HomeShotTargetKPP', 'AwayShotTargetKPP', 'Streak', 'HomeStreak', 'AwayStreak', 'WeightedStreak', 'HomeWeightedStreak', 'AwayWeightedStreak']
-    preDropFeatures = ["FTHG", "FTAG", "HTHG", "HTAG","HTR","MHTGD", "MATGD"]
+    overfittingData = ["FTHG", "FTAG", "HTHG", "HTAG","HTR","MHTGD", "MATGD"]
 
-    df.drop(bettingStats + bettingStatsEx + genDropInfo + preDropFeatures, axis=1, inplace=True)
+    df.drop(bettingStats + bettingStatsEx + genDropInfo + overfittingData, axis=1, inplace=True)
 
     seasons = sorted(df['season'].unique())
     dfs = []
