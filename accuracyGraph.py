@@ -4,6 +4,9 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 from TrainTest import trainTestSplit
+from sklearn.neural_network import MLPClassifier
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
 X_train, X_test, y_train, y_test = trainTestSplit()
 
@@ -12,7 +15,9 @@ models = [
         ('Linear SVM', SVC(kernel='linear')),
         ('RBF SVM', SVC(kernel='rbf')),
         ('Random Forest', RandomForestClassifier(n_estimators=250)),
-        ('Gradient Boosting', GradientBoostingClassifier(n_estimators=250))
+        ('Gradient Boosting', GradientBoostingClassifier(n_estimators=250)),
+        ('MLP Classifier', MLPClassifier(activation="relu", hidden_layer_sizes=(128, 64, 32), solver="adam", max_iter=1000)),
+        ('RBFN', make_pipeline(StandardScaler(), MLPClassifier(activation="relu", hidden_layer_sizes=(128, 64, 32),  solver="adam", max_iter=1000, learning_rate_init=0.001, tol=1e-4)))
     ]
 
 results = {}
