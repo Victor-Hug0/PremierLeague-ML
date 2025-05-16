@@ -35,7 +35,7 @@ def getAccuracies():
         ('Random Forest', RandomForestClassifier(n_estimators=250)),
         ('Gradient Boosting', GradientBoostingClassifier(n_estimators=250)),
         ('MLP Classifier', MLPClassifier(activation="relu", hidden_layer_sizes=(256, 128, 64), solver="adam", max_iter=1000, learning_rate_init=0.001, tol=1e-4)),
-        ('RBFN', make_pipeline(StandardScaler(), MLPClassifier(activation="relu", hidden_layer_sizes=(128, 64, 32),  solver="adam", max_iter=1000, learning_rate_init=0.001, tol=1e-4))),
+        ('MLP Classifier (scaled)', make_pipeline(StandardScaler(), MLPClassifier(activation="relu", hidden_layer_sizes=(128, 64, 32),  solver="adam", max_iter=1000, learning_rate_init=0.001, tol=1e-4))),
         ('Keras MLP', KerasClassifier(model=create_keras_model, epochs=100, batch_size=32)),
         ('Keras MLP (scaled)', make_pipeline(StandardScaler(), KerasClassifier(model=create_keras_model, epochs=100, batch_size=32)))
     ]
