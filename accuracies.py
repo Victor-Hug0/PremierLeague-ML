@@ -8,10 +8,25 @@ from sklearn.metrics import classification_report
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from scikeras.wrappers import KerasClassifier
+from tensorflow import keras
 
 def getAccuracies():
     
     X_train, X_test, y_train, y_test = trainTestSplit()
+    input_dim = X_train.shape[1]
+
+    def create_keras_model():
+        model = keras.Sequential([
+            keras.layers.Input(shape=(input_dim,)), 
+            keras.layers.Dense(64, activation="relu"),
+            keras.layers.Dropout(0.5),
+            keras.layers.Dense(3, activation="softmax")
+        ])
+
+        model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.001), loss=keras.losses.SparseCategoricalCrossentropy(), metrics=["accuracy"])
+
+        return model
 
     models = [
         ('Naive Bayes', GaussianNB()),
@@ -20,7 +35,9 @@ def getAccuracies():
         ('Random Forest', RandomForestClassifier(n_estimators=250)),
         ('Gradient Boosting', GradientBoostingClassifier(n_estimators=250)),
         ('MLP Classifier', MLPClassifier(activation="relu", hidden_layer_sizes=(256, 128, 64), solver="adam", max_iter=1000, learning_rate_init=0.001, tol=1e-4)),
-        ('RBFN', make_pipeline(StandardScaler(), MLPClassifier(activation="relu", hidden_layer_sizes=(128, 64, 32),  solver="adam", max_iter=1000, learning_rate_init=0.001, tol=1e-4)))
+        ('RBFN', make_pipeline(StandardScaler(), MLPClassifier(activation="relu", hidden_layer_sizes=(128, 64, 32),  solver="adam", max_iter=1000, learning_rate_init=0.001, tol=1e-4))),
+        ('Keras MLP', KerasClassifier(model=create_keras_model, epochs=100, batch_size=32)),
+        ('Keras MLP (scaled)', make_pipeline(StandardScaler(), KerasClassifier(model=create_keras_model, epochs=100, batch_size=32)))
     ]
     
     labels = ["H", "A", "D"]
