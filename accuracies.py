@@ -10,10 +10,16 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from scikeras.wrappers import KerasClassifier
 from tensorflow import keras
+from sklearn.preprocessing import LabelEncoder
 
 def getAccuracies():
     
     X_train, X_test, y_train, y_test = trainTestSplit()
+    le = LabelEncoder()
+    y_train = le.fit_transform(y_train)
+    y_test = le.fit_transform(y_test)
+    labels = [0, 1, 2]
+    results = {}
     input_dim = X_train.shape[1]
 
     def create_keras_model():
@@ -38,11 +44,7 @@ def getAccuracies():
         ('MLP Classifier (scaled)', make_pipeline(StandardScaler(), MLPClassifier(activation="relu", hidden_layer_sizes=(128, 64, 32),  solver="adam", max_iter=1000, learning_rate_init=0.001, tol=1e-4))),
         ('Keras MLP', KerasClassifier(model=create_keras_model, epochs=100, batch_size=32)),
         ('Keras MLP (scaled)', make_pipeline(StandardScaler(), KerasClassifier(model=create_keras_model, epochs=100, batch_size=32)))
-    ]
-    
-    labels = ["H", "A", "D"]
-
-    results = {}
+    ]  
 
     for name, model in models:
         try:
@@ -50,7 +52,7 @@ def getAccuracies():
             y_pred = model.predict(X_test)
             accuracy = accuracy_score(y_test, y_pred)
             cMatrix = confusion_matrix(y_test, y_pred, labels=labels)
-            cReport = classification_report(y_test, y_pred, labels=labels)
+            cReport = classification_report(y_test, y_pred, labels=labels, zero_division=0)
             results[name] = accuracy
             print(f'{name}: {accuracy:.2%}')
             print(cMatrix)
